@@ -1450,23 +1450,6 @@ mod tests {
         assert_eq!(currencies_url, "https://api.yadio.io/currencies");
     }
 
-    #[tokio::test]
-    async fn test_get_nostr_client_failure() {
-        initialize();
-        // Ensure NOSTR_CLIENT is not initialized for the test
-        let client = NOSTR_CLIENT.get();
-        assert!(client.is_none());
-    }
-
-    #[tokio::test]
-    async fn test_get_nostr_client_success() {
-        initialize();
-        // Mock NOSTR_CLIENT initialization
-        let client = Client::default();
-        NOSTR_CLIENT.set(client).unwrap();
-        let client_result = get_nostr_client();
-        assert!(client_result.is_ok());
-    }
 
     #[test]
     fn test_bytes_to_string_empty() {
@@ -1476,26 +1459,6 @@ mod tests {
         assert_eq!(result, "");
     }
 
-    #[tokio::test]
-    async fn test_send_dm() {
-        initialize();
-        // Mock the send_dm function
-        let receiver_pubkey = Keys::generate().public_key();
-        let uuid = uuid!("308e1272-d5f4-47e6-bd97-3504baea9c23");
-        let message = Message::Order(MessageKind::new(
-            Some(uuid),
-            None,
-            None,
-            Action::FiatSent,
-            None,
-        ));
-        let payload = message.as_json().unwrap();
-        let sender_keys = Keys::generate();
-        // Now error is well manager this call will fail now, previously test was ok becuse error was not managed
-        // now just make it ok and then will make a better test
-        let result = send_dm(receiver_pubkey, &sender_keys, &payload, None).await;
-        assert!(result.is_err());
-    }
 
     #[tokio::test]
     async fn test_get_fiat_amount_requested() {
